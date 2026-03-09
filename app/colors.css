@@ -1,0 +1,341 @@
+/* ─────────────────────────────────────────
+   LIGHT MODE
+───────────────────────────────────────── */
+:root, .light, .light-theme {
+  --tomato-1: #d6d5d5;
+  --tomato-2: #d0cece;
+  --tomato-3: #c6c2c1;
+  --tomato-4: #bdb7b6;
+  --tomato-5: #b5acab;
+  --tomato-6: #aca19f;
+  --tomato-7: #a19391;
+  --tomato-8: #907d7a;
+  --tomato-9: #65524f;
+  --tomato-10: #554441;
+  --tomato-11: #3e312f;
+  --tomato-12: #292120;
+
+  --tomato-a1: #ff5c000c;
+  --tomato-a2: #ad5c041a;
+  --tomato-a3: #7d400629;
+  --tomato-a4: #662e0335;
+  --tomato-a5: #5b230141;
+  --tomato-a6: #521e014e;
+  --tomato-a7: #4a18015e;
+  --tomato-a8: #44140278;
+  --tomato-a9: #2c0b02a8;
+  --tomato-a10: #230900b7;
+  --tomato-a11: #180500cb;
+  --tomato-a12: #0e0401dc;
+
+  --tomato-contrast: #fff;
+  --tomato-surface: #d0cbc8cc;
+  --tomato-indicator: #65524f;
+  --tomato-track: #65524f;
+
+  --gray-1: #d3d4da;
+  --gray-2: #cbcfd8;
+  --gray-3: #bdc3d4;
+  --gray-4: #b1b8ce;
+  --gray-5: #a5aecb;
+  --gray-6: #9aa4c5;
+  --gray-7: #8b97bf;
+  --gray-8: #7382b6;
+  --gray-9: #485687;
+  --gray-10: #404c7a;
+  --gray-11: #293358;
+  --gray-12: #171e3b;
+
+  --gray-a1: #c1520e0d;
+  --gray-a2: #3b0f080f;
+  --gray-a3: #03014b1c;
+  --gray-a4: #050c5d2b;
+  --gray-a5: #02127139;
+  --gray-a6: #01137146;
+  --gray-a7: #01167758;
+  --gray-a8: #01197f75;
+  --gray-a9: #011258a9;
+  --gray-a10: #02104db3;
+  --gray-a11: #000b37ce;
+  --gray-a12: #010827e4;
+
+  --gray-contrast: #ffffff;
+  --gray-surface: #ffffffcc;
+  --gray-indicator: #485687;
+  --gray-track: #485687;
+
+  --color-background: #d4dbe5;
+
+  --accent-1:  var(--tomato-1);
+  --accent-2:  var(--tomato-2);
+  --accent-3:  var(--tomato-3);
+  --accent-4:  var(--tomato-4);
+  --accent-5:  var(--tomato-5);
+  --accent-6:  var(--tomato-6);
+  --accent-7:  var(--tomato-7);
+  --accent-8:  var(--tomato-8);
+  --accent-9:  var(--tomato-9);
+  --accent-10: var(--tomato-10);
+  --accent-11: var(--tomato-11);
+  --accent-12: var(--tomato-12);
+
+  --accent-a1:  var(--tomato-a1);
+  --accent-a2:  var(--tomato-a2);
+  --accent-a3:  var(--tomato-a3);
+  --accent-a4:  var(--tomato-a4);
+  --accent-a5:  var(--tomato-a5);
+  --accent-a6:  var(--tomato-a6);
+  --accent-a7:  var(--tomato-a7);
+  --accent-a8:  var(--tomato-a8);
+  --accent-a9:  var(--tomato-a9);
+  --accent-a10: var(--tomato-a10);
+  --accent-a11: var(--tomato-a11);
+  --accent-a12: var(--tomato-a12);
+
+  --accent-contrast:  var(--tomato-contrast);
+  --accent-surface:   var(--tomato-surface);
+  --accent-indicator: var(--tomato-indicator);
+  --accent-track:     var(--tomato-track);
+}
+
+/* ─────────────────────────────────────────
+   LIGHT MODE — P3 WIDE GAMUT
+───────────────────────────────────────── */
+@supports (color: color(display-p3 1 1 1)) {
+  @media (color-gamut: p3) {
+    :root, .light, .light-theme {
+      --tomato-1: oklch(87.4% 0.0014 27.48);
+      --tomato-2: oklch(85.3% 0.0026 27.48);
+      --tomato-3: oklch(81.7% 0.0049 27.48);
+      --tomato-4: oklch(78.4% 0.0075 27.48);
+      --tomato-5: oklch(75.2% 0.0098 27.48);
+      --tomato-6: oklch(71.7% 0.013 27.48);
+      --tomato-7: oklch(67.4% 0.0173 27.48);
+      --tomato-8: oklch(60.6% 0.0234 27.48);
+      --tomato-9: oklch(45.7% 0.0261 27.48);
+      --tomato-10: oklch(40.3% 0.024 27.48);
+      --tomato-11: oklch(32.7% 0.0191 27.48);
+      --tomato-12: oklch(25.8% 0.0113 27.48);
+
+      --tomato-a1: color(display-p3 1 0 0 / 0.024);
+      --tomato-a2: color(display-p3 0.6353 0.3333 0.0078 / 0.097);
+      --tomato-a3: color(display-p3 0.4314 0.2235 0.0039 / 0.154);
+      --tomato-a4: color(display-p3 0.3529 0.1608 0.0039 / 0.202);
+      --tomato-a5: color(display-p3 0.302 0.1216 0 / 0.25);
+      --tomato-a6: color(display-p3 0.2824 0.1098 0.0039 / 0.303);
+      --tomato-a7: color(display-p3 0.2588 0.0863 0.0039 / 0.365);
+      --tomato-a8: color(display-p3 0.2235 0.0706 0.0039 / 0.461);
+      --tomato-a9: color(display-p3 0.1412 0.0353 0 / 0.65);
+      --tomato-a10: color(display-p3 0.1098 0.0353 0 / 0.711);
+      --tomato-a11: color(display-p3 0.0784 0.0196 0 / 0.794);
+      --tomato-a12: color(display-p3 0.0471 0.0078 0 / 0.86);
+
+      --tomato-contrast: #fff;
+      --tomato-surface: color(display-p3 0.8078 0.7961 0.7843 / 0.8);
+      --tomato-indicator: oklch(45.7% 0.0261 27.48);
+      --tomato-track: oklch(45.7% 0.0261 27.48);
+
+      --gray-1: oklch(87.2% 0.0076 271.5);
+      --gray-2: oklch(85.4% 0.0138 271.5);
+      --gray-3: oklch(81.7% 0.0249 271.5);
+      --gray-4: oklch(78.4% 0.0328 271.5);
+      --gray-5: oklch(75.3% 0.0424 271.5);
+      --gray-6: oklch(72.2% 0.0488 271.5);
+      --gray-7: oklch(68.1% 0.0602 271.5);
+      --gray-8: oklch(61.5% 0.0816 271.5);
+      --gray-9: oklch(46.3% 0.0823 271.5);
+      --gray-10: oklch(42.7% 0.0782 271.5);
+      --gray-11: oklch(33.2% 0.0674 271.5);
+      --gray-12: oklch(24.4% 0.0559 271.5);
+
+      --gray-a1: color(display-p3 0.6784 0.302 0.0157 / 0.049);
+      --gray-a2: color(display-p3 0.2275 0.051 0.0157 / 0.058);
+      --gray-a3: color(display-p3 0.0157 0.0039 0.2549 / 0.11);
+      --gray-a4: color(display-p3 0.0039 0.0275 0.3255 / 0.165);
+      --gray-a5: color(display-p3 0.0039 0.0431 0.4039 / 0.216);
+      --gray-a6: color(display-p3 0.0039 0.0549 0.4 / 0.268);
+      --gray-a7: color(display-p3 0.0039 0.0745 0.4314 / 0.339);
+      --gray-a8: color(display-p3 0.0039 0.0784 0.4588 / 0.447);
+      --gray-a9: color(display-p3 0 0.0549 0.3098 / 0.648);
+      --gray-a10: color(display-p3 0 0.0471 0.2784 / 0.691);
+      --gray-a11: color(display-p3 0 0.0353 0.1922 / 0.799);
+      --gray-a12: color(display-p3 0 0.0235 0.1373 / 0.888);
+
+      --gray-contrast: #ffffff;
+      --gray-surface: color(display-p3 1 1 1 / 80%);
+      --gray-indicator: oklch(46.3% 0.0823 271.5);
+      --gray-track: oklch(46.3% 0.0823 271.5);
+    }
+  }
+}
+
+/* ─────────────────────────────────────────
+   DARK MODE
+───────────────────────────────────────── */
+.dark, .dark-theme {
+  --tomato-1: #323130;
+  --tomato-2: #383636;
+  --tomato-3: #403d3d;
+  --tomato-4: #474241;
+  --tomato-5: #4d4746;
+  --tomato-6: #564e4d;
+  --tomato-7: #645a58;
+  --tomato-8: #7b6d6b;
+  --tomato-9: #9a8582;
+  --tomato-10: #8e7976;
+  --tomato-11: #cab7b5;
+  --tomato-12: #f1e6e5;
+
+  --tomato-a1: #87d90003;
+  --tomato-a2: #f8f60009;
+  --tomato-a3: #fbeb4913;
+  --tomato-a4: #fadd6a1c;
+  --tomato-a5: #fdde8523;
+  --tomato-a6: #ffda9b2e;
+  --tomato-a7: #fddbac40;
+  --tomato-a8: #ffdbbf5c;
+  --tomato-a9: #ffd8c682;
+  --tomato-a10: #fdd1bb74;
+  --tomato-a11: #ffe6dfbe;
+  --tomato-a12: #fff3f1ee;
+
+  --tomato-contrast: #fff;
+  --tomato-surface: #3f3d3180;
+  --tomato-indicator: #9a8582;
+  --tomato-track: #9a8582;
+
+  --gray-1: #2d313b;
+  --gray-2: #333741;
+  --gray-3: #393e4c;
+  --gray-4: #3c4256;
+  --gray-5: #3f465e;
+  --gray-6: #444c68;
+  --gray-7: #4d5779;
+  --gray-8: #5f6c9a;
+  --gray-9: #6877a8;
+  --gray-10: #7281b2;
+  --gray-11: #a9b6e2;
+  --gray-12: #ebeef7;
+
+  --gray-a1: #00d90003;
+  --gray-a2: #65fcbc0a;
+  --gray-a3: #93e6ff15;
+  --gray-a4: #84beff22;
+  --gray-a5: #81b2fd2d;
+  --gray-a6: #85affe3a;
+  --gray-a7: #8aafff50;
+  --gray-a8: #91aeff7b;
+  --gray-a9: #94b0fe8e;
+  --gray-a10: #9cb6fe9b;
+  --gray-a11: #becdfeda;
+  --gray-a12: #f3f6fff5;
+
+  --gray-contrast: #ffffff;
+  --gray-surface: rgba(0, 0, 0, 0.05);
+  --gray-indicator: #6877a8;
+  --gray-track: #6877a8;
+
+  --color-background: #312f3c;
+
+  --accent-1:  var(--tomato-1);
+  --accent-2:  var(--tomato-2);
+  --accent-3:  var(--tomato-3);
+  --accent-4:  var(--tomato-4);
+  --accent-5:  var(--tomato-5);
+  --accent-6:  var(--tomato-6);
+  --accent-7:  var(--tomato-7);
+  --accent-8:  var(--tomato-8);
+  --accent-9:  var(--tomato-9);
+  --accent-10: var(--tomato-10);
+  --accent-11: var(--tomato-11);
+  --accent-12: var(--tomato-12);
+
+  --accent-a1:  var(--tomato-a1);
+  --accent-a2:  var(--tomato-a2);
+  --accent-a3:  var(--tomato-a3);
+  --accent-a4:  var(--tomato-a4);
+  --accent-a5:  var(--tomato-a5);
+  --accent-a6:  var(--tomato-a6);
+  --accent-a7:  var(--tomato-a7);
+  --accent-a8:  var(--tomato-a8);
+  --accent-a9:  var(--tomato-a9);
+  --accent-a10: var(--tomato-a10);
+  --accent-a11: var(--tomato-a11);
+  --accent-a12: var(--tomato-a12);
+
+  --accent-contrast:  var(--tomato-contrast);
+  --accent-surface:   var(--tomato-surface);
+  --accent-indicator: var(--tomato-indicator);
+  --accent-track:     var(--tomato-track);
+}
+
+/* ─────────────────────────────────────────
+   DARK MODE — P3 WIDE GAMUT
+───────────────────────────────────────── */
+@supports (color: color(display-p3 1 1 1)) {
+  @media (color-gamut: p3) {
+    .dark, .dark-theme {
+      --tomato-1: oklch(31.3% 0.0016 27.48);
+      --tomato-2: oklch(33.5% 0.0025 27.48);
+      --tomato-3: oklch(36.4% 0.0043 27.48);
+      --tomato-4: oklch(38.3% 0.0062 27.48);
+      --tomato-5: oklch(40.4% 0.0083 27.48);
+      --tomato-6: oklch(43.2% 0.0109 27.48);
+      --tomato-7: oklch(47.6% 0.0142 27.48);
+      --tomato-8: oklch(54.7% 0.0186 27.48);
+      --tomato-9: oklch(63.5% 0.0261 27.48);
+      --tomato-10: oklch(59.4% 0.0261 27.48);
+      --tomato-11: oklch(79.6% 0.0216 27.48);
+      --tomato-12: oklch(93.4% 0.0122 27.48);
+
+      --tomato-a1: color(display-p3 0.5843 0.9686 0 / 0.01);
+      --tomato-a2: color(display-p3 1 0.9922 0 / 0.034);
+      --tomato-a3: color(display-p3 1 0.9922 0.349 / 0.068);
+      --tomato-a4: color(display-p3 1 0.9176 0.4627 / 0.102);
+      --tomato-a5: color(display-p3 0.9922 0.898 0.5608 / 0.132);
+      --tomato-a6: color(display-p3 1 0.8824 0.6353 / 0.175);
+      --tomato-a7: color(display-p3 1 0.8941 0.7098 / 0.238);
+      --tomato-a8: color(display-p3 1 0.8902 0.7725 / 0.35);
+      --tomato-a9: color(display-p3 1 0.8706 0.8 / 0.496);
+      --tomato-a10: color(display-p3 1 0.8588 0.7725 / 0.437);
+      --tomato-a11: color(display-p3 1 0.9216 0.8941 / 0.729);
+      --tomato-a12: color(display-p3 1 0.9608 0.9529 / 0.923);
+
+      --tomato-contrast: #fff;
+      --tomato-surface: color(display-p3 0.2431 0.2353 0.1922 / 0.5);
+      --tomato-indicator: oklch(63.5% 0.0261 27.48);
+      --tomato-track: oklch(63.5% 0.0261 27.48);
+
+      --gray-1: oklch(31.3% 0.0197 271.5);
+      --gray-2: oklch(33.6% 0.0188 271.5);
+      --gray-3: oklch(36.4% 0.0256 271.5);
+      --gray-4: oklch(38.1% 0.0351 271.5);
+      --gray-5: oklch(39.8% 0.0414 271.5);
+      --gray-6: oklch(42.3% 0.0465 271.5);
+      --gray-7: oklch(46.2% 0.0564 271.5);
+      --gray-8: oklch(54% 0.0736 271.5);
+      --gray-9: oklch(57.7% 0.0782 271.5);
+      --gray-10: oklch(61% 0.0769 271.5);
+      --gray-11: oklch(78.2% 0.0647 271.5);
+      --gray-12: oklch(94.9% 0.0121 271.5);
+
+      --gray-a1: color(display-p3 0 0.9686 0 / 0.01);
+      --gray-a2: color(display-p3 0.4941 0.9922 0.7373 / 0.039);
+      --gray-a3: color(display-p3 0.6235 0.902 1 / 0.082);
+      --gray-a4: color(display-p3 0.5608 0.7686 1 / 0.128);
+      --gray-a5: color(display-p3 0.5412 0.7216 1 / 0.169);
+      --gray-a6: color(display-p3 0.549 0.702 1 / 0.22);
+      --gray-a7: color(display-p3 0.5843 0.7059 1 / 0.302);
+      --gray-a8: color(display-p3 0.6 0.702 0.9961 / 0.465);
+      --gray-a9: color(display-p3 0.6157 0.7098 1 / 0.536);
+      --gray-a10: color(display-p3 0.6471 0.7333 1 / 0.587);
+      --gray-a11: color(display-p3 0.7686 0.8196 1 / 0.832);
+      --gray-a12: color(display-p3 0.9608 0.9686 0.9961 / 0.955);
+
+      --gray-contrast: #ffffff;
+      --gray-surface: color(display-p3 0 0 0 / 5%);
+      --gray-indicator: oklch(57.7% 0.0782 271.5);
+      --gray-track: oklch(57.7% 0.0782 271.5);
+    }
+  }
+}

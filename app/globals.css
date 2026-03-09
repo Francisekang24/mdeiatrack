@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import "@radix-ui/themes/styles.css";
+@config "./tailwind.config.ts";
+
+@import "./colors.css";
+
+
+:root,
+.light,
+.light-theme,
+.radix-themes {
+    --color-background: #d4dbe5;
+}
+
+.dark,
+.dark-theme,
+:is(.dark, .dark-theme) :where(.radix-themes:not(.light, .light-theme)) {
+    --color-background: #312f3c;
+}
+
+@theme {
+    /* Accent (tomato scale) */
+    --color-accent-1: var(--tomato-1);
+    --color-accent-2: var(--tomato-2);
+    --color-accent-3: var(--tomato-3);
+    --color-accent-4: var(--tomato-4);
+    --color-accent-5: var(--tomato-5);
+    --color-accent-6: var(--tomato-6);
+    --color-accent-7: var(--tomato-7);
+    --color-accent-8: var(--tomato-8);
+    --color-accent-9: var(--tomato-9);
+    --color-accent-10: var(--tomato-10);
+    --color-accent-11: var(--tomato-11);
+    --color-accent-12: var(--tomato-12);
+    --color-accent-a1: var(--tomato-a1);
+    --color-accent-a2: var(--tomato-a2);
+    --color-accent-a3: var(--tomato-a3);
+    --color-accent-a4: var(--tomato-a4);
+    --color-accent-a5: var(--tomato-a5);
+    --color-accent-a6: var(--tomato-a6);
+    --color-accent-a7: var(--tomato-a7);
+    --color-accent-a8: var(--tomato-a8);
+    --color-accent-a9: var(--tomato-a9);
+    --color-accent-a10: var(--tomato-a10);
+    --color-accent-a11: var(--tomato-a11);
+    --color-accent-a12: var(--tomato-a12);
+
+    /* Gray scale */
+    --color-gray-1: var(--gray-1);
+    --color-gray-2: var(--gray-2);
+    --color-gray-3: var(--gray-3);
+    --color-gray-4: var(--gray-4);
+    --color-gray-5: var(--gray-5);
+    --color-gray-6: var(--gray-6);
+    --color-gray-7: var(--gray-7);
+    --color-gray-8: var(--gray-8);
+    --color-gray-9: var(--gray-9);
+    --color-gray-10: var(--gray-10);
+    --color-gray-11: var(--gray-11);
+    --color-gray-12: var(--gray-12);
+    --color-gray-a1: var(--gray-a1);
+    --color-gray-a2: var(--gray-a2);
+    --color-gray-a3: var(--gray-a3);
+    --color-gray-a4: var(--gray-a4);
+    --color-gray-a5: var(--gray-a5);
+    --color-gray-a6: var(--gray-a6);
+    --color-gray-a7: var(--gray-a7);
+    --color-gray-a8: var(--gray-a8);
+    --color-gray-a9: var(--gray-a9);
+    --color-gray-a10: var(--gray-a10);
+    --color-gray-a11: var(--gray-a11);
+    --color-gray-a12: var(--gray-a12);
+
+    --color-background: var(--color-background);
+}
+
+@theme inline {
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #312f3c;
+        --foreground: #d4dbe5;
+    }
+}
+
+body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+}
