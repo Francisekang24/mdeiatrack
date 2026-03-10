@@ -7,7 +7,7 @@ import MovieRow from "@/components/movie-row";
 
 export default function Home() {
     return (
-        <main className="flex min-h-screen w-full flex-col items-center justify-between sm:items-start">
+        <main className="flex min-h-screen w-full flex-col items-center justify-between">
             <Hero movie={movies[0]} />
             <div className="mt-6">
                 {watchlist.length > 0 && <MovieRow title="My Watchlist" movies={watchlist} href="/watchlist" />}

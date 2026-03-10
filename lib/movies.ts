@@ -1,7 +1,8 @@
 // Types for content origin (K-Drama, C-Drama, J-Drama, etc.)
-export type ContentOrigin = "kdrama" | "cdrama" | "jdrama" | "hollywood" | "bollywood" | "anime" | "other"
+export type ContentOrigin = "kdrama" | "cdrama" | "jdrama" | "hollywood" | "bollywood" | "other"
 export type ContentType = "movie" | "series" | "anime"
 export type ContentCategory = "film" | "drama" | "animation" | "documentary"
+export type PersonRole = "director" | "producer" | "actor"
 
 // Person types
 export interface Person {
@@ -11,10 +12,13 @@ export interface Person {
   birthDate?: string
   nationality?: string
   bio?: string
+  roles: PersonRole[]
 }
 
-export interface CastMember extends Person {
-  character: string
+export interface MovieCredit {
+  personId: string
+  role: PersonRole
+  character?: string // only relevant for actors
 }
 
 // Rating structure
@@ -60,6 +64,7 @@ export interface Movie {
   originalTitle?: string
   year: number
   releaseDate?: string
+  country?: string
   type: ContentType
   origin: ContentOrigin
   category?: ContentCategory
@@ -69,74 +74,73 @@ export interface Movie {
   genres: string[]
   subgenres?: string[]
   description: string
-  
-  // People
-  directors: Person[]
-  producers: Person[]
-  cast: CastMember[]
-  
+
+  // Credits (replaces directors, producers, cast)
+  credits: MovieCredit[]
+
   // Runtime
   runtime: string
   episodes?: number
   seasons?: number
-  
+
   // Ratings
   ratings: ExternalRatings
   detailedRatings?: DetailedRatings
-  
+
   // Watch tracking
   watchedDates: WatchRecord[]
   lastWatchedDate?: string
   watchCount: number
-  
+
   // Watchlist
   inWatchlist: boolean
   watchlistAddedDate?: string
-  
+
   // User data
   personalReview?: string
   isLiked: boolean
-  
+
   // Media
   trailerUrl?: string
 }
 
-// People database
-export const directors: Person[] = [
-  { id: "d1", name: "Denis Villeneuve", image: "https://image.tmdb.org/t/p/w185/PlFkRD7hnY2X7PGKr1hdiV6vZF.jpg", nationality: "Canadian" },
-  { id: "d2", name: "Christopher Nolan", image: "https://image.tmdb.org/t/p/w185/xuAIuYSmsUzKlUMBFGVZaWsY3DZ.jpg", nationality: "British" },
-  { id: "d3", name: "Yorgos Lanthimos", image: "https://image.tmdb.org/t/p/w185/w1CtOtbqAQK7pCfKn2JgCHilZKd.jpg", nationality: "Greek" },
-  { id: "d4", name: "Bong Joon-ho", image: "https://image.tmdb.org/t/p/w185/xNOFS3gqL7Qr8V2oZUi0P7oaHik.jpg", nationality: "South Korean" },
-  { id: "d5", name: "Daniel Kwan", image: "https://image.tmdb.org/t/p/w185/5qizJkAWKwBvraY4DmLU8x1ujAv.jpg", nationality: "American" },
-  { id: "d6", name: "Hayao Miyazaki", image: "https://image.tmdb.org/t/p/w185/mG3cfxtA5jqDcQO4tYWzLQnfhkK.jpg", nationality: "Japanese" },
-  { id: "d7", name: "Matt Reeves", image: "https://image.tmdb.org/t/p/w185/ooX3H4iQp0z4pHMfOxKBDZLoCw.jpg", nationality: "American" },
-  { id: "d8", name: "Lee Jeong-hyo", image: "https://image.tmdb.org/t/p/w185/3VQa5pF7lNVr6xYFMHMiSKK1NR.jpg", nationality: "South Korean" },
-  { id: "d9", name: "Hwang Dong-hyuk", image: "https://image.tmdb.org/t/p/w185/6oHlOeJFbfwmEhpIK2H3H5q5nXZ.jpg", nationality: "South Korean" },
-  { id: "d10", name: "Wes Anderson", image: "https://image.tmdb.org/t/p/w185/sQxDGE4GEF0b8dqKmEX9G7W3ckd.jpg", nationality: "American" },
-  { id: "d11", name: "Frank Darabont", image: "https://image.tmdb.org/t/p/w185/7LqmE3p1XTwCdNCOmBxovq210Qo.jpg", nationality: "American" },
-  { id: "d12", name: "Makoto Shinkai", image: "https://image.tmdb.org/t/p/w185/hAz0mWR3s4fDjqWl2Cdmjx9PKKN.jpg", nationality: "Japanese" },
+// ─── People Database (single source of truth) ────────────────────────────────
+
+export const people: Person[] = [
+  // Directors
+  { id: "d1", name: "Denis Villeneuve", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/PlFkRD7hnY2X7PGKr1hdiV6vZF.jpg", nationality: "Canadian" },
+  { id: "d2", name: "Christopher Nolan", roles: ["director", "producer"], image: "https://image.tmdb.org/t/p/w185/xuAIuYSmsUzKlUMBFGVZaWsY3DZ.jpg", nationality: "British" },
+  { id: "d3", name: "Yorgos Lanthimos", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/w1CtOtbqAQK7pCfKn2JgCHilZKd.jpg", nationality: "Greek" },
+  { id: "d4", name: "Bong Joon-ho", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/xNOFS3gqL7Qr8V2oZUi0P7oaHik.jpg", nationality: "South Korean" },
+  { id: "d5", name: "Daniel Kwan", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/5qizJkAWKwBvraY4DmLU8x1ujAv.jpg", nationality: "American" },
+  { id: "d6", name: "Hayao Miyazaki", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/mG3cfxtA5jqDcQO4tYWzLQnfhkK.jpg", nationality: "Japanese" },
+  { id: "d7", name: "Matt Reeves", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/ooX3H4iQp0z4pHMfOxKBDZLoCw.jpg", nationality: "American" },
+  { id: "d8", name: "Lee Jeong-hyo", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/3VQa5pF7lNVr6xYFMHMiSKK1NR.jpg", nationality: "South Korean" },
+  { id: "d9", name: "Hwang Dong-hyuk", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/6oHlOeJFbfwmEhpIK2H3H5q5nXZ.jpg", nationality: "South Korean" },
+  { id: "d10", name: "Wes Anderson", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/sQxDGE4GEF0b8dqKmEX9G7W3ckd.jpg", nationality: "American" },
+  { id: "d11", name: "Frank Darabont", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/7LqmE3p1XTwCdNCOmBxovq210Qo.jpg", nationality: "American" },
+  { id: "d12", name: "Makoto Shinkai", roles: ["director"], image: "https://image.tmdb.org/t/p/w185/hAz0mWR3s4fDjqWl2Cdmjx9PKKN.jpg", nationality: "Japanese" },
+
+  // Producers
+  { id: "p1", name: "Emma Thomas", roles: ["producer"], image: "https://image.tmdb.org/t/p/w185/rB4HaX1qU2f6p5D1pX3w8I1KN4B.jpg", nationality: "British" },
+  { id: "p2", name: "Mary Parent", roles: ["producer"], image: "https://image.tmdb.org/t/p/w185/jMiI58ALW5p9fj0hZGKBHT1tzMy.jpg", nationality: "American" },
+  { id: "p3", name: "Toshio Suzuki", roles: ["producer"], image: "https://image.tmdb.org/t/p/w185/5e2TN7rJXNLB7bKc8k6j9G5W5sZ.jpg", nationality: "Japanese" },
+
+  // Actors
+  { id: "a1", name: "Timothée Chalamet", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/BE2sdjpgsa2rNTFa66f7upkaOP.jpg", nationality: "American" },
+  { id: "a2", name: "Zendaya", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/oayZv8f8MnUoQgMwxnqwNgwYazh.jpg", nationality: "American" },
+  { id: "a3", name: "Cillian Murphy", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/dm6V24NjjvjMiCtbMkc8Y2GO7yk.jpg", nationality: "Irish" },
+  { id: "a4", name: "Emma Stone", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/2hwXbPW2ffnXUe1Um0WXHG0cTwb.jpg", nationality: "American" },
+  { id: "a5", name: "Song Kang-ho", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/dXuPpS2TLAguxdoYxlqC1JrPsyw.jpg", nationality: "South Korean" },
+  { id: "a6", name: "Michelle Yeoh", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/5WIS2VPNQN7VH1C4aBPEMBqSX9f.jpg", nationality: "Malaysian" },
+  { id: "a7", name: "Robert Pattinson", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/wDoLvVvTTbwqS4cRNvH1U6fLw1P.jpg", nationality: "British" },
+  { id: "a8", name: "Hyun Bin", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/qXPipLWtOUBqkgeHHBcRmwgHjCZ.jpg", nationality: "South Korean" },
+  { id: "a9", name: "Son Ye-jin", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/yv0HQ3sGOz0aTXY1hLlnv9P6Jq6.jpg", nationality: "South Korean" },
+  { id: "a10", name: "Lee Jung-jae", roles: ["actor"], image: "https://image.tmdb.org/t/p/w185/pVQ96T6x1bhDIGvjCSpVxprjfGo.jpg", nationality: "South Korean" },
 ]
 
-export const producers: Person[] = [
-  { id: "p1", name: "Emma Thomas", image: "https://image.tmdb.org/t/p/w185/rB4HaX1qU2f6p5D1pX3w8I1KN4B.jpg", nationality: "British" },
-  { id: "p2", name: "Mary Parent", image: "https://image.tmdb.org/t/p/w185/jMiI58ALW5p9fj0hZGKBHT1tzMy.jpg", nationality: "American" },
-  { id: "p3", name: "Toshio Suzuki", image: "https://image.tmdb.org/t/p/w185/5e2TN7rJXNLB7bKc8k6j9G5W5sZ.jpg", nationality: "Japanese" },
-]
+// ─── Genres Database ──────────────────────────────────────────────────────────
 
-export const actors: Person[] = [
-  { id: "a1", name: "Timothée Chalamet", image: "https://image.tmdb.org/t/p/w185/BE2sdjpgsa2rNTFa66f7upkaOP.jpg", nationality: "American" },
-  { id: "a2", name: "Zendaya", image: "https://image.tmdb.org/t/p/w185/oayZv8f8MnUoQgMwxnqwNgwYazh.jpg", nationality: "American" },
-  { id: "a3", name: "Cillian Murphy", image: "https://image.tmdb.org/t/p/w185/dm6V24NjjvjMiCtbMkc8Y2GO7yk.jpg", nationality: "Irish" },
-  { id: "a4", name: "Emma Stone", image: "https://image.tmdb.org/t/p/w185/2hwXbPW2ffnXUe1Um0WXHG0cTwb.jpg", nationality: "American" },
-  { id: "a5", name: "Song Kang-ho", image: "https://image.tmdb.org/t/p/w185/dXuPpS2TLAguxdoYxlqC1JrPsyw.jpg", nationality: "South Korean" },
-  { id: "a6", name: "Michelle Yeoh", image: "https://image.tmdb.org/t/p/w185/5WIS2VPNQN7VH1C4aBPEMBqSX9f.jpg", nationality: "Malaysian" },
-  { id: "a7", name: "Robert Pattinson", image: "https://image.tmdb.org/t/p/w185/wDoLvVvTTbwqS4cRNvH1U6fLw1P.jpg", nationality: "British" },
-  { id: "a8", name: "Hyun Bin", image: "https://image.tmdb.org/t/p/w185/qXPipLWtOUBqkgeHHBcRmwgHjCZ.jpg", nationality: "South Korean" },
-  { id: "a9", name: "Son Ye-jin", image: "https://image.tmdb.org/t/p/w185/yv0HQ3sGOz0aTXY1hLlnv9P6Jq6.jpg", nationality: "South Korean" },
-  { id: "a10", name: "Lee Jung-jae", image: "https://image.tmdb.org/t/p/w185/pVQ96T6x1bhDIGvjCSpVxprjfGo.jpg", nationality: "South Korean" },
-]
-
-// Genres database
 export const genres: Genre[] = [
   { id: "g1", name: "Sci-Fi", subgenres: ["Space Opera", "Cyberpunk", "Time Travel", "Dystopian"] },
   { id: "g2", name: "Drama", subgenres: ["Family Drama", "Legal Drama", "Medical Drama", "Period Drama"] },
@@ -150,7 +154,8 @@ export const genres: Genre[] = [
   { id: "g10", name: "Documentary", subgenres: ["Nature", "True Crime", "Historical", "Social"] },
 ]
 
-// Categories database
+// ─── Categories Database ──────────────────────────────────────────────────────
+
 export const categories: Category[] = [
   { id: "c1", name: "Recently Watched" },
   { id: "c2", name: "Top Rated" },
@@ -162,13 +167,15 @@ export const categories: Category[] = [
   { id: "c8", name: "Award Winners" },
 ]
 
-// Calculate average rating from detailed ratings
-export function calculateOverallRating(ratings: Omit<DetailedRatings, 'overall'>): number {
+// ─── Utility ──────────────────────────────────────────────────────────────────
+
+export function calculateOverallRating(ratings: Omit<DetailedRatings, "overall">): number {
   const values = [ratings.acting, ratings.visual, ratings.story, ratings.conclusion, ratings.rewatchability]
   return Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 10) / 10
 }
 
-// Main movies database
+// ─── Movies Database ──────────────────────────────────────────────────────────
+
 export const movies: Movie[] = [
   {
     id: "1",
@@ -183,11 +190,11 @@ export const movies: Movie[] = [
     genres: ["Sci-Fi", "Drama"],
     subgenres: ["Space Opera"],
     description: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.",
-    directors: [directors[0]],
-    producers: [producers[1]],
-    cast: [
-      { ...actors[0], character: "Paul Atreides" },
-      { ...actors[1], character: "Chani" },
+    credits: [
+      { personId: "d1", role: "director" },
+      { personId: "p2", role: "producer" },
+      { personId: "a1", role: "actor", character: "Paul Atreides" },
+      { personId: "a2", role: "actor", character: "Chani" },
     ],
     runtime: "166 min",
     ratings: { imdb: 8.8, rottenTomatoes: 93, myRating: 9.0 },
@@ -213,10 +220,10 @@ export const movies: Movie[] = [
     genres: ["Drama"],
     subgenres: ["Period Drama"],
     description: "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.",
-    directors: [directors[1]],
-    producers: [producers[0]],
-    cast: [
-      { ...actors[2], character: "J. Robert Oppenheimer" },
+    credits: [
+      { personId: "d2", role: "director" },
+      { personId: "p1", role: "producer" },
+      { personId: "a3", role: "actor", character: "J. Robert Oppenheimer" },
     ],
     runtime: "180 min",
     ratings: { imdb: 8.5, rottenTomatoes: 93, myRating: 8.5 },
@@ -241,10 +248,9 @@ export const movies: Movie[] = [
     genres: ["Comedy", "Drama"],
     subgenres: ["Dark Comedy"],
     description: "The incredible tale about the fantastical evolution of Bella Baxter.",
-    directors: [directors[2]],
-    producers: [],
-    cast: [
-      { ...actors[3], character: "Bella Baxter" },
+    credits: [
+      { personId: "d3", role: "director" },
+      { personId: "a4", role: "actor", character: "Bella Baxter" },
     ],
     runtime: "141 min",
     ratings: { imdb: 8.0, rottenTomatoes: 92 },
@@ -267,10 +273,9 @@ export const movies: Movie[] = [
     genres: ["Thriller", "Drama"],
     subgenres: ["Psychological"],
     description: "Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.",
-    directors: [directors[3]],
-    producers: [],
-    cast: [
-      { ...actors[4], character: "Ki-taek" },
+    credits: [
+      { personId: "d4", role: "director" },
+      { personId: "a5", role: "actor", character: "Ki-taek" },
     ],
     runtime: "132 min",
     ratings: { imdb: 8.5, rottenTomatoes: 99, myRating: 9.5 },
@@ -295,10 +300,9 @@ export const movies: Movie[] = [
     genres: ["Action", "Comedy"],
     subgenres: ["Martial Arts"],
     description: "An aging Chinese immigrant is swept up in an insane adventure across multiverses.",
-    directors: [directors[4]],
-    producers: [],
-    cast: [
-      { ...actors[5], character: "Evelyn Wang" },
+    credits: [
+      { personId: "d5", role: "director" },
+      { personId: "a6", role: "actor", character: "Evelyn Wang" },
     ],
     runtime: "139 min",
     ratings: { imdb: 8.0, rottenTomatoes: 94, myRating: 8.5 },
@@ -322,9 +326,10 @@ export const movies: Movie[] = [
     genres: ["Animation", "Fantasy"],
     subgenres: ["Anime"],
     description: "During her family's move, a sullen 10-year-old girl wanders into a world ruled by gods and spirits.",
-    directors: [directors[5]],
-    producers: [producers[2]],
-    cast: [],
+    credits: [
+      { personId: "d6", role: "director" },
+      { personId: "p3", role: "producer" },
+    ],
     runtime: "125 min",
     ratings: { imdb: 8.6, rottenTomatoes: 97, myRating: 9.0 },
     detailedRatings: { acting: 8, visual: 10, story: 9, conclusion: 9, rewatchability: 10, overall: 9.2 },
@@ -347,10 +352,9 @@ export const movies: Movie[] = [
     genres: ["Action", "Drama"],
     subgenres: ["Superhero"],
     description: "When a sadistic serial killer begins murdering key political figures in Gotham, Batman investigates.",
-    directors: [directors[6]],
-    producers: [],
-    cast: [
-      { ...actors[6], character: "Bruce Wayne / Batman" },
+    credits: [
+      { personId: "d7", role: "director" },
+      { personId: "a7", role: "actor", character: "Bruce Wayne / Batman" },
     ],
     runtime: "176 min",
     ratings: { imdb: 7.8, rottenTomatoes: 85, myRating: 8.0 },
@@ -374,11 +378,10 @@ export const movies: Movie[] = [
     genres: ["Romance", "Drama"],
     subgenres: ["Melodrama"],
     description: "A South Korean heiress crash-lands in North Korea where she meets an army officer.",
-    directors: [directors[7]],
-    producers: [],
-    cast: [
-      { ...actors[7], character: "Ri Jeong-hyeok" },
-      { ...actors[8], character: "Yoon Se-ri" },
+    credits: [
+      { personId: "d8", role: "director" },
+      { personId: "a8", role: "actor", character: "Ri Jeong-hyeok" },
+      { personId: "a9", role: "actor", character: "Yoon Se-ri" },
     ],
     runtime: "70 min/ep",
     episodes: 16,
@@ -405,10 +408,9 @@ export const movies: Movie[] = [
     genres: ["Thriller", "Drama"],
     subgenres: ["Psychological"],
     description: "Hundreds of cash-strapped players accept a strange invitation to compete in deadly children's games.",
-    directors: [directors[8]],
-    producers: [],
-    cast: [
-      { ...actors[9], character: "Seong Gi-hun" },
+    credits: [
+      { personId: "d9", role: "director" },
+      { personId: "a10", role: "actor", character: "Seong Gi-hun" },
     ],
     runtime: "55 min/ep",
     episodes: 9,
@@ -433,9 +435,10 @@ export const movies: Movie[] = [
     genres: ["Sci-Fi", "Drama"],
     subgenres: ["Space Opera", "Time Travel"],
     description: "A team of explorers travel through a wormhole in space to ensure humanity's survival.",
-    directors: [directors[1]],
-    producers: [producers[0]],
-    cast: [],
+    credits: [
+      { personId: "d2", role: "director" },
+      { personId: "p1", role: "producer" },
+    ],
     runtime: "169 min",
     ratings: { imdb: 8.7, rottenTomatoes: 73, myRating: 9.5 },
     detailedRatings: { acting: 9, visual: 10, story: 10, conclusion: 10, rewatchability: 10, overall: 9.8 },
@@ -460,9 +463,9 @@ export const movies: Movie[] = [
     genres: ["Animation", "Romance"],
     subgenres: ["Anime"],
     description: "Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart?",
-    directors: [directors[11]],
-    producers: [],
-    cast: [],
+    credits: [
+      { personId: "d12", role: "director" },
+    ],
     runtime: "106 min",
     ratings: { imdb: 8.4, rottenTomatoes: 98, myRating: 9.0 },
     watchedDates: [{ date: "2017-04-10" }],
@@ -484,9 +487,9 @@ export const movies: Movie[] = [
     genres: ["Drama"],
     subgenres: ["Prison Drama"],
     description: "Two imprisoned men bond over years, finding solace and redemption through acts of common decency.",
-    directors: [directors[10]],
-    producers: [],
-    cast: [],
+    credits: [
+      { personId: "d11", role: "director" },
+    ],
     runtime: "142 min",
     ratings: { imdb: 9.3, rottenTomatoes: 91, myRating: 10 },
     detailedRatings: { acting: 10, visual: 8, story: 10, conclusion: 10, rewatchability: 10, overall: 9.6 },
@@ -511,9 +514,7 @@ export const movies: Movie[] = [
     genres: ["Animation", "Action"],
     subgenres: ["Anime", "Martial Arts"],
     description: "Tanjiro and his comrades embark on a new mission aboard the Mugen Train.",
-    directors: [],
-    producers: [],
-    cast: [],
+    credits: [],
     runtime: "117 min",
     ratings: { imdb: 8.2, rottenTomatoes: 98, myRating: 8.5 },
     watchedDates: [{ date: "2021-05-20" }],
@@ -535,9 +536,7 @@ export const movies: Movie[] = [
     genres: ["Drama", "Comedy"],
     subgenres: ["Legal Drama", "Dark Comedy"],
     description: "A Korean-Italian mafia lawyer gives up his position to settle a score in Korea.",
-    directors: [],
-    producers: [],
-    cast: [],
+    credits: [],
     runtime: "80 min/ep",
     episodes: 20,
     seasons: 1,
@@ -561,9 +560,7 @@ export const movies: Movie[] = [
     genres: ["Action", "Drama"],
     subgenres: ["Martial Arts", "Historical Romance"],
     description: "The story of two men from opposite walks of life who become soulmates.",
-    directors: [],
-    producers: [],
-    cast: [],
+    credits: [],
     runtime: "45 min/ep",
     episodes: 36,
     seasons: 1,
@@ -587,9 +584,7 @@ export const movies: Movie[] = [
     genres: ["Fantasy", "Drama"],
     subgenres: ["High Fantasy"],
     description: "Two cultivators become soulmates while investigating mysteries in a world of martial arts.",
-    directors: [],
-    producers: [],
-    cast: [],
+    credits: [],
     runtime: "45 min/ep",
     episodes: 50,
     seasons: 1,
@@ -613,9 +608,7 @@ export const movies: Movie[] = [
     genres: ["Thriller", "Sci-Fi"],
     subgenres: ["Dystopian"],
     description: "A gamer and his friends find themselves in a parallel Tokyo where they must compete in dangerous games.",
-    directors: [],
-    producers: [],
-    cast: [],
+    credits: [],
     runtime: "50 min/ep",
     episodes: 16,
     seasons: 2,
@@ -628,29 +621,66 @@ export const movies: Movie[] = [
   },
 ]
 
-// Helper functions
-export const recentlyWatched = movies.filter((m) => m.watchCount > 0).sort((a, b) => 
-  new Date(b.lastWatchedDate || 0).getTime() - new Date(a.lastWatchedDate || 0).getTime()
-).slice(0, 6)
+// ─── Helper Functions ─────────────────────────────────────────────────────────
 
-export const topRated = [...movies].sort((a, b) => (b.ratings.myRating || b.ratings.imdb || 0) - (a.ratings.myRating || a.ratings.imdb || 0)).slice(0, 6)
+export function getPersonById(id: string): Person | undefined {
+  return people.find((p) => p.id === id)
+}
 
-export const watchlist = movies.filter((m) => m.inWatchlist)
+export function getPeopleByRole(role: PersonRole): Person[] {
+  return people.filter((p) => p.roles.includes(role))
+}
 
-export const kDrama = movies.filter((m) => m.origin === "kdrama")
-export const cDrama = movies.filter((m) => m.origin === "cdrama")
-export const jDrama = movies.filter((m) => m.origin === "jdrama")
-export const anime = movies.filter((m) => m.type === "anime")
-export const moviesList = movies.filter((m) => m.type === "movie")
-export const seriesList = movies.filter((m) => m.type === "series")
+// Resolve a movie's credits into grouped, typed people
+export function getMovieCredits(movie: Movie): {
+  directors: Person[]
+  producers: Person[]
+  cast: (Person & { character?: string })[]
+} {
+  const directors: Person[] = []
+  const producers: Person[] = []
+  const cast: (Person & { character?: string })[] = []
+
+  for (const credit of movie.credits) {
+    const person = getPersonById(credit.personId)
+    if (!person) continue
+    if (credit.role === "director") directors.push(person)
+    else if (credit.role === "producer") producers.push(person)
+    else if (credit.role === "actor") cast.push({ ...person, character: credit.character })
+  }
+
+  return { directors, producers, cast }
+}
+
+// Get all movies a person was involved in, grouped by their role
+export function getMoviesByPerson(personId: string): {
+  directed: Movie[]
+  produced: Movie[]
+  acted: (Movie & { character?: string })[]
+} {
+  return movies.reduce(
+    (acc, movie) => {
+      const credit = movie.credits.find((c) => c.personId === personId)
+      if (!credit) return acc
+      if (credit.role === "director") acc.directed.push(movie)
+      else if (credit.role === "producer") acc.produced.push(movie)
+      else if (credit.role === "actor") acc.acted.push({ ...movie, character: credit.character })
+      return acc
+    },
+    { directed: [] as Movie[], produced: [] as Movie[], acted: [] as (Movie & { character?: string })[] }
+  )
+}
 
 export function getMovieById(id: string): Movie | undefined {
   return movies.find((m) => m.id === id)
 }
 
 export function getMoviesByGenre(genre: string): Movie[] {
-  return movies.filter((m) => m.genres.some((g) => g.toLowerCase() === genre.toLowerCase()) || 
-    m.tags.some((t) => t.toLowerCase() === genre.toLowerCase()))
+  return movies.filter(
+    (m) =>
+      m.genres.some((g) => g.toLowerCase() === genre.toLowerCase()) ||
+      m.tags.some((t) => t.toLowerCase() === genre.toLowerCase())
+  )
 }
 
 export function getMoviesByOrigin(origin: ContentOrigin): Movie[] {
@@ -663,32 +693,50 @@ export function getMoviesByType(type: ContentType): Movie[] {
 
 export function getSimilarMovies(movie: Movie): Movie[] {
   return movies
-    .filter((m) => m.id !== movie.id && (m.genres.some((g) => movie.genres.includes(g)) || m.origin === movie.origin))
+    .filter(
+      (m) =>
+        m.id !== movie.id &&
+        (m.genres.some((g) => movie.genres.includes(g)) || m.origin === movie.origin)
+    )
     .slice(0, 4)
 }
 
-export function getPersonById(id: string, type: 'director' | 'producer' | 'actor'): Person | undefined {
-  const list = type === 'director' ? directors : type === 'producer' ? producers : actors
-  return list.find((p) => p.id === id)
-}
-
 export function getAllGenres(): string[] {
-  return genres.map(g => g.name)
+  return genres.map((g) => g.name)
 }
 
 export function getAllYears(): number[] {
   const years = new Set<number>()
-  movies.forEach(m => years.add(m.year))
+  movies.forEach((m) => years.add(m.year))
   return Array.from(years).sort((a, b) => b - a)
 }
 
 export function getContentOrigins(): ContentOrigin[] {
   const origins = new Set<ContentOrigin>()
-  movies.forEach(m => origins.add(m.origin))
+  movies.forEach((m) => origins.add(m.origin))
   return Array.from(origins)
 }
 
 export function getSubgenres(genreName: string): string[] {
-  const genre = genres.find(g => g.name.toLowerCase() === genreName.toLowerCase())
+  const genre = genres.find((g) => g.name.toLowerCase() === genreName.toLowerCase())
   return genre?.subgenres || []
 }
+
+// ─── Derived Lists ────────────────────────────────────────────────────────────
+
+export const recentlyWatched = movies
+  .filter((m) => m.watchCount > 0)
+  .sort((a, b) => new Date(b.lastWatchedDate || 0).getTime() - new Date(a.lastWatchedDate || 0).getTime())
+  .slice(0, 6)
+
+export const topRated = [...movies]
+  .sort((a, b) => (b.ratings.myRating || b.ratings.imdb || 0) - (a.ratings.myRating || a.ratings.imdb || 0))
+  .slice(0, 6)
+
+export const watchlist = movies.filter((m) => m.inWatchlist)
+export const kDrama = movies.filter((m) => m.origin === "kdrama")
+export const cDrama = movies.filter((m) => m.origin === "cdrama")
+export const jDrama = movies.filter((m) => m.origin === "jdrama")
+export const anime = movies.filter((m) => m.type === "anime")
+export const moviesList = movies.filter((m) => m.type === "movie")
+export const seriesList = movies.filter((m) => m.type === "series")

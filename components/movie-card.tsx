@@ -28,7 +28,7 @@ export default function MovieCard({ movie, size = "md" }: MovieCardProps) {
         <>
             {/* MD */}
             <Card asChild size="1" style={{ padding: '0' }}>
-                <Link href={`/movies/${movie.id}`} className="group">
+                <Link href={`/movie/${movie.id}`} className="group">
                     <div className={`${size === "md" ? "" : "hidden"} w-[184px] p-1`}>
                         <Image
                             src={movie.poster}
@@ -90,13 +90,13 @@ export default function MovieCard({ movie, size = "md" }: MovieCardProps) {
 
             {/* LG */}
             <Card asChild size="1" style={{ padding: '0' }}>
-                <Link href={`/movies/${movie.id}`} className="group">
+                <Link href={`/movie/${movie.id}`} className="group">
                     <div className={`${size === "lg" ? "" : "hidden"} flex p-1`}>
                         <Image
                             src={movie.poster}
                             alt={movie.title}
-                            width={150}
-                            height={225}
+                            width={180}
+                            height={270}
                             className="object-cover rounded-md"
                         />
                         <div className="ml-2 w-80 flex flex-col gap-4">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Play, Plus, Star, Info } from "lucide-react";
 import { Button, Badge } from "@radix-ui/themes";
 import type { Movie } from "@/lib/movies";
+import { DisplayRating } from "./display-stars-rating";
 
 interface HeroProps {
     movie: Movie;
@@ -31,7 +32,7 @@ export default function Hero({ movie }: HeroProps) {
                     <div className="max-w-2xl space-y-4 ">
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
                             <span className="flex items-center gap-1 text-accent font-medium">
-                                <Star className="h-4 w-4 fill-accent" />
+                                <DisplayRating rating={movie.ratings.myRating || movie.ratings.imdb} />
                                 {movie.ratings.myRating || movie.ratings.imdb}
                             </span>
                             <span>{movie.year}</span>
