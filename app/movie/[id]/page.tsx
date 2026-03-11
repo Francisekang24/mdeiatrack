@@ -5,7 +5,7 @@ import {
     Star, Play, Calendar, Clock, ChevronLeft, MessageSquare, Eye, RefreshCcw, Globe, Film, Users, Edit,
 } from "lucide-react";
 import { getMovieById, getSimilarMovies, getContentOrigins, getPersonById } from "@/lib/movies";
-import { Button, IconButton, Badge } from "@radix-ui/themes";
+import { Button, IconButton, Badge, Blockquote } from "@radix-ui/themes";
 import MovieRow from "@/components/movie-row";
 import { RatingSlider } from "@/components/rating-slider";
 import { DisplayRating } from "@/components/display-stars-rating";
@@ -19,6 +19,7 @@ const CountryPlaceHolder = "Spain"
 const ReleaseDatePlaceHolder = "January 30, 2007"
 const Imdb = "https://www.imdb.com/title/tt4631532/"
 const CharacterPlaceHolder = "John Doe"
+const PersonalReviewPlaceHolder = "I really enjoyed this movie! The plot was engaging and the performances were outstanding. Highly recommend it to anyone looking for a great film to watch."
 
 interface MoviePageProps {
     params: Promise<{ id: string }>
@@ -33,16 +34,60 @@ export default async function MoviePage({ params }: MoviePageProps) {
         notFound()
     }
 
+    const isSeries = movie.episodes && movie.episodes > 0;
+    const backHref = isSeries
+        ? "/series"
+        : movie.type === "anime"
+            ? "/anime"
+            : "/movies";
+
     const similarMovies = getSimilarMovies(movie);
 
     const cast = movie.credits.filter(person => person.role.includes("actor"));
+    const castPeople = cast.map(person => getPersonById(person.personId));
     const directors = movie.credits.filter(person => person.role.includes("director"));
+    const directorPeople = directors.map(person => getPersonById(person.personId));
     const producers = movie.credits.filter(person => person.role.includes("producer"));
+    const producerPeople = producers.map(person => getPersonById(person.personId));
+
+    function displayCredits(people: (ReturnType<typeof getPersonById> | null)[], role: string) {
+        if (people.length === 0) return null;
+
+        return (
+            <div className="container p-8">
+                <h1 className="text-2xl md:text-3xl font-bold text-accent-9 mb-4">
+                    {role}:
+                </h1>
+                <div className="flex flex-wrap gap-4">
+                    {people.map((person) => (
+                        <Link
+                            key={person?.id}
+                            href={`/people/${person?.id}`}
+                            className="group flex flex-col items-center gap-2 p-2"
+                        >
+                            <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-muted">
+                                <Image
+                                    src={person?.image || "/placeholder-profile.png"}
+                                    alt={person?.name || "Unknown"}
+                                    fill
+                                    className="object-cover transition-transform group-hover:scale-105"
+                                    sizes="(max-width: 768px) 64px, 64px"
+                                />
+                            </div>
+                            <p className="text-sm font-medium text-accent-12 group-hover:text-accent-9 font-mono transition-colors">
+                                {person?.name}
+                            </p>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        )
+    }
 
     return (
 
         <section className="min-h-screen bg-background">
-            <div className="relative h-[50vh] md:h-[60vh] w-full overflow-visible">
+            <div className="relative h-[70vh] md:h-[60vh] w-full overflow-visible">
                 {/* Background image */}
                 <div className="absolute inset-0">
                     <Image
@@ -65,9 +110,9 @@ export default async function MoviePage({ params }: MoviePageProps) {
                         asChild
                         className="mb-6 gap-2 text-accent-9 hover:text-gray-9"
                     >
-                        <Link href="/movies">
+                        <Link href={backHref}>
                             <ChevronLeft className="h-4 w-4" />
-                            Back to People
+                            Back to {movie.type}
                         </Link>
                     </IconButton>
                     {/* Person Info */}
@@ -112,6 +157,15 @@ export default async function MoviePage({ params }: MoviePageProps) {
                                         movie.description || DescriptionPlaceHolder
                                     }</span>
                                 </p>
+                                {isSeries ?
+                                    <p className="text-accent-9">
+                                        Episodes: <span className="text-accent-12">{movie.episodes}</span>
+                                    </p>
+                                    :
+                                    <p className="text-accent-9">
+                                        Runtime: <span className="text-accent-12">{movie.runtime || "Unknown"}</span>
+                                    </p>
+                                }
                                 <p className="text-accent-9 truncate">
                                     Imdb: <a href={Imdb} target="_blank" className="text-gray-9 hover:underline">{Imdb}</a>
                                 </p>
@@ -137,34 +191,19 @@ export default async function MoviePage({ params }: MoviePageProps) {
                     </div>
                 </div>
             </div>
-            <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-accent-9 mb-4 mt-8 px-4">
-                    Cast:
-                </h1>
-                <div className="flex flex-wrap gap-4 px-4">
-                    {cast.map((person) => (
-                        <Link
-                            key={person.personId}
-                            href={`/people/${person.personId}`}
-                            className="group flex items-center gap-4"
-                        >
-                            <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-muted">
-                                <Image
-                                    src={getPersonById(person.personId)?.image || "/placeholder-profile.png"}
-                                    alt={person.name}
-                                    fill
-                                    className="object-cover transition-transform group-hover:scale-105"
-                                    sizes="(max-width: 768px) 64px, 64px"
-                                />
-                                <div className="absolute inset-0 bg-linear-to-t from-background to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </div>
-                            <p className="text-sm font-medium text-accent-9 group-hover:text-primary transition-colors">
-                                {person.name}
-                            </p>
-                        </Link>
-                    ))}
-                </div>
+            {/* Personal Opinion */}
+            <div className="container p-8">
+                <h2 className="text-xl font-bold text-accent-9 mb-2">My thoughts </h2>
+                <Blockquote className="font-mono">
+                    {movie.personalReview || PersonalReviewPlaceHolder}
+                </Blockquote>
             </div>
+
+            {/* Movie credits */}
+            {displayCredits(castPeople, "Cast")}
+            {displayCredits(directorPeople, "Directors")}
+            {displayCredits(producerPeople, "Producers")}
+            {/* Similar Movies */}
             <div>
                 <MovieRow title="Similar Movies" movies={similarMovies} />
             </div>
